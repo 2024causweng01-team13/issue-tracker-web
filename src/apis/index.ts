@@ -3,7 +3,7 @@ import axios from "axios";
 
 axios.defaults.withCredentials = true;
 
-const API_HOST = "http://localhost:8080";
+const API_HOST = "http://15.165.202.64" ?? "http://localhost:8080";
 
 export const fetcher = axios.create({
   baseURL: API_HOST,
