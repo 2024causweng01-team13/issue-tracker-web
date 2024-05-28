@@ -1,17 +1,15 @@
 import { LaptopOutlined, UserOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query';
 import { Breadcrumb, Layout, Menu, MenuProps, theme } from 'antd';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
-import { fetcher } from './apis';
 import { PATHS, Router } from './routes/routers';
 
 const { Header, Content, Sider } = Layout;
 
 export const App = () => {
   const navigate = useNavigate();
-  const { data, isLoading } = useQuery({ queryKey: ['health'], queryFn: () => fetcher.get('/actuator/health')});
+  const { pathname } = useLocation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -28,39 +26,43 @@ export const App = () => {
     icon: React.createElement(LaptopOutlined)
   }]
 
+  const breadCrumbContent = useMemo(() => {
+    return pathname.split('/').slice(1).map(path => ({ title: path }))
+  }, [pathname]);
+
   return (
-    <Layout>
-      <Header style={{ display: 'flex', alignItems: 'center', width: '100%', padding: 30 }}>
-        <h2 className="text-[#FFFFFF]">Issue Tracker</h2>
-      </Header>
-      <Layout>
-        <Sider width={200}>
-          <Menu 
-            mode="inline" 
-            items={Menus} 
-            style={{ height: '100%', borderRight: 0 }}
-          />
-        </Sider>
-        <Layout style={{ padding: '0 24px 24px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}
-            items={[{title: 'Home'}, { title: 'Login'}]} 
-          />
-          <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}>
-            <Router />
-            <p>
-              Issue Tracker Server Status: {data && !isLoading ? JSON.stringify(data.data) : 'Loading...'}
-            </p>
-          </Content>
+    <div className='max-w-screen-xl m-auto h-full'>
+      <Layout style={{ height: '100%', overflow: 'auto' }}>
+        <Header style={{ display: 'flex', alignItems: 'center', width: '100%', padding: 30 }}>
+          <h2 className="text-[#FFFFFF]">Issue Tracker</h2>
+        </Header>
+        <Layout>
+          <Sider width={200}>
+            <Menu 
+              mode="inline" 
+              items={Menus} 
+              style={{ height: '100%', borderRight: 0 }}
+            />
+          </Sider>
+          <Layout style={{ padding: '0 24px 24px' }}>
+            <Breadcrumb style={{ margin: '16px 0' }}
+              items={breadCrumbContent} 
+            />
+            <Content
+              style={{
+                padding: 24,
+                margin: 0,
+                minHeight: 280,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+                overflow: 'auto',
+              }}>
+                <Router />
+            </Content>
+          </Layout>
         </Layout>
       </Layout>
-    </Layout>
+    </div>
   )
 }
 
