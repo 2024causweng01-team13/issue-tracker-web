@@ -14,7 +14,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const mutation = useMutation({
-    mutationFn: (data: LoginFormValues) => axios.post('http://15.165.202.64/api/v1/login', data), // API URL을 실제 주소로 변경하세요.
+    mutationFn: (data: LoginFormValues) => axios.post('http://15.165.202.64/api/v1/login', data), // API URL을 실제 주소
     onSuccess: (data) => {
       message.success('로그인 성공');
       // 대시보드나 홈 화면으로 리디렉션
