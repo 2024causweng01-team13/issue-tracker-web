@@ -13,7 +13,7 @@ const SignUp: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const mutation = useMutation({
-    mutationFn: (data: SignUpFormValues) => axios.post('http://15.165.202.64/api/v1/signup', data), // API URL을 실제 주소로 변경하세요.
+    mutationFn: (data: SignUpFormValues) => axios.post('http://15.165.202.64/api/v1/signup', data), // API URL을 실제 주소
     onSuccess: (data) => {
       message.success('회원가입 성공');
       // 로그인 페이지로 리디렉션
