@@ -10,6 +10,12 @@ export const fetcher = axios.create({
   withCredentials: true,
 })
 
+export type CommonResponse<TData> = {
+  data?: TData | null;
+  errorCode?: string | null;
+  message?: string | null;
+}
+
 const defaultErrorHandler = (err: any) => {
   console.error(err);
 };
