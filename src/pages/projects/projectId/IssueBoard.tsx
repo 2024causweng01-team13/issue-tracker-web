@@ -38,41 +38,62 @@ const IssueBoard: React.FC = () => {
 
       <Modal
         title="Create a New Issue"
-        visible={ModalVisible}
+        open={modalVisible}
         onCancel={handleCancel}
         footer={null}
       >
         <CreateIssue onIssueCreate={handleIssueCreate} />
       </Modal>
+      <div className='column-container'>
+        <div className="column">
+          <h4>New</h4>
+          <hr />
+          {issues
+            .filter(issue => issue.status === 'New')
+            .map(issue => (
+              <IssueCard key={issue.id} issue={issue} />
+            ))}
+        </div>
 
-      <div className="column">
-        <h4>To-Do</h4>
-        <hr />
-        {issues
-          .filter(issue => issue.status === 'To-Do')
-          .map(issue => (
-            <IssueCard key={issue.id} issue={issue} />
-          ))}
-      </div>
+        <div className="column">
+          <h4>Assigned</h4>
+          <hr />
+          {issues
+            .filter(issue => issue.status === 'Assigned')
+            .map(issue => (
+              <IssueCard key={issue.id} issue={issue} />
+            ))}
+        </div>
 
-      <div className="column">
-        <h4>In Progress</h4>
-        <hr />
-        {issues
-          .filter(issue => issue.status === 'In Progress')
-          .map(issue => (
-            <IssueCard key={issue.id} issue={issue} />
-          ))}
-      </div>
+        <div className="column">
+          <h4>Resolved</h4>
+          <hr />
+          {issues
+            .filter(issue => issue.status === 'Resolved')
+            .map(issue => (
+              <IssueCard key={issue.id} issue={issue} />
+            ))}
+        </div>
 
-      <div className="column">
-        <h4>Done</h4>
-        <hr />
-        {issues
-          .filter(issue => issue.status === 'Done')
-          .map(issue => (
-            <IssueCard key={issue.id} issue={issue} />
-          ))}
+        <div className="column">
+          <h4>Closed</h4>
+          <hr />
+          {issues
+            .filter(issue => issue.status === 'Closed')
+            .map(issue => (
+              <IssueCard key={issue.id} issue={issue} />
+            ))}
+        </div>
+
+        <div className="column">
+          <h4>Reopened</h4>
+          <hr />
+          {issues
+            .filter(issue => issue.status === 'Reopened')
+            .map(issue => (
+              <IssueCard key={issue.id} issue={issue} />
+            ))}
+        </div>
       </div>
     </div>
   );
