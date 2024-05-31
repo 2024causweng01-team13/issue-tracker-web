@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Input, DatePicker, Select, Form } from 'antd';
 import dayjs from 'dayjs';
-import { Issue } from './IssueCard';
+import { Issue } from './IssueInterface';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -21,7 +21,8 @@ const CreateIssue: React.FC<{ onIssueCreate?: (issue: Issue) => void }> = ({ onI
       assignee: values.assignee,
       priority: values.priority || 'Major',
       status: values.status || 'New',
-      comment: values.comment,
+      comments: values.comments,
+      keyword: values.keyword,
     };
     
     if (onIssueCreate) {
