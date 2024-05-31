@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Input, DatePicker, Select, Form } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Issue } from './IssueCard';
+
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -14,7 +15,12 @@ const CreateIssue: React.FC<{ onIssueCreate?: (issue: Issue) => void }> = ({ onI
       id: Date.now(), // 임시 ID 생성
       title: values.title,
       description: values.description,
-      status: values.status || 'To-Do', // 기본 상태 설정
+      reporter: values.reporter,
+      reportedDate: values.reportedDate.format('YYYY-MM-DD'),
+      assignee: values.assignee,
+      priority: values.priority || 'medium',
+      status: values.status || 'To-Do',
+      comment: values.comment,
     };
     if (onIssueCreate) {
       onIssueCreate(newIssue); // 이슈 생성 함수 호출
@@ -24,7 +30,7 @@ const CreateIssue: React.FC<{ onIssueCreate?: (issue: Issue) => void }> = ({ onI
   };
 
   return (
-    <Form form={form} layout="vertical" onFinish={onFinish} initialValues={{ reportedDate: moment() }}>
+    <Form form={form} layout="vertical" onFinish={onFinish} initialValues={{ reportedDate: dayjs() }}>
       <Form.Item name="title" label="Issue Title" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
