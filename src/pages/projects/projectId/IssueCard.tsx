@@ -7,9 +7,10 @@ export interface Issue {
   description: string;
   reporter?: string;
   reportedDate?: string;
+  fixer?: string;
   assignee?: string;
-  priority?: 'high' | 'medium' | 'low';
-  status: 'To-Do' | 'In Progress' | 'Done';
+  priority?: 'Blocker' | 'Critical' | 'Major' | 'Minor' | 'Trivial';
+  status: 'New' | 'Assigned' | 'Resolved' | 'Closed' | 'Reopened';
   comment?: string;
 }
 
