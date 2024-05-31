@@ -1,7 +1,14 @@
-export const ProjectsBoard = () => {
+import ProjectTopMenu from './ProjectTopMenu';
+import ProjectMainBoard from './ProjectMainBoard';
+
+
+function ProjectsBoard() {
   return (
-    <div>
-      <h1>Projects Board</h1>
+    <div className="projects-board">
+      <ProjectTopMenu />
+      <ProjectMainBoard />
     </div>
-  )
+  );
 }
+
+export default ProjectsBoard;
