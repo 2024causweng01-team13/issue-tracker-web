@@ -5,7 +5,12 @@ export interface Issue {
   id: number;
   title: string;
   description: string;
+  reporter?: string;
+  reportedDate?: string;
+  assignee?: string;
+  priority?: 'high' | 'medium' | 'low';
   status: 'To-Do' | 'In Progress' | 'Done';
+  comment?: string;
 }
 
 interface IssueCardProps {
