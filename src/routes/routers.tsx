@@ -16,7 +16,7 @@ export const PATHS = {
   CREATE_PROJECT: "/projects/new",
   PROJECT_DETAIL: "/projects/:projectId",
   PROJECT_ANALYTICS: "/projects/:projectId/analytics",
-  ISSUE_DETAIL: "/projects/:projectId/issues/:issueId",
+  ISSUE_DETAIL: "/issuedetail/:id",
   CREATE_ISSUE: "/projects/:projectId/new",
 };
 
