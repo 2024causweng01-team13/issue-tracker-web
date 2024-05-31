@@ -1,11 +1,12 @@
-import { useParams } from "react-router-dom";
+import React from 'react';
+import IssueBoard from './IssueBoard';
 
-export const ProjectDetail = () => {
-  const { projectId } = useParams();
-
+const ProjectDetail: React.FC = () => {
   return (
-    <div>
-      <h1>Project Detail for Project {projectId}</h1>
+    <div className="App">
+      <IssueBoard />
     </div>
-  )
-}
+  );
+};
+
+export default ProjectDetail;
