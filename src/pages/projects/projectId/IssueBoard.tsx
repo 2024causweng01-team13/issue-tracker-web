@@ -39,7 +39,7 @@ const IssueBoard: React.FC = () => {
 
       <Modal
         title="Create a New Issue"
-        open={modalVisible}
+        open={ModalVisible}
         onCancel={handleCancel}
         footer={null}
       >
