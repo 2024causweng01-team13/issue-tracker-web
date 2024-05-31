@@ -12,16 +12,18 @@ const CreateIssue: React.FC<{ onIssueCreate?: (issue: Issue) => void }> = ({ onI
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
     const newIssue: Issue = {
-      id: Date.now(), // 임시 ID 생성
+      id: Date.now(),
       title: values.title,
       description: values.description,
       reporter: values.reporter,
       reportedDate: values.reportedDate.format('YYYY-MM-DD'),
+      fixer: values.fixer,
       assignee: values.assignee,
-      priority: values.priority || 'medium',
-      status: values.status || 'To-Do',
+      priority: values.priority || 'Major',
+      status: values.status || 'New',
       comment: values.comment,
     };
+    
     if (onIssueCreate) {
       onIssueCreate(newIssue); // 이슈 생성 함수 호출
     } else {
@@ -43,21 +45,28 @@ const CreateIssue: React.FC<{ onIssueCreate?: (issue: Issue) => void }> = ({ onI
       <Form.Item name="reportedDate" label="Reported Date" rules={[{ required: true }]}>
         <DatePicker format="YYYY-MM-DD" />
       </Form.Item>
+      <Form.Item name="fixer" label="Fixer">
+        <Input />
+      </Form.Item>
       <Form.Item name="assignee" label="Assignee">
         <Input />
       </Form.Item>
-      <Form.Item name="priority" label="Priority" rules={[{ required: true }]}>
+      <Form.Item name="priority" label="Priority" rules={[{ required: true }]} initialValue={'Major'}>
         <Select>
-          <Option value="high">High</Option>
-          <Option value="medium">Medium</Option>
-          <Option value="low">Low</Option>
+          <Option value="Blocker">Blocker</Option>
+          <Option value="Critical">Critical</Option>
+          <Option value="Major">Major</Option>
+          <Option value="Minor">Minor</Option>
+          <Option value="Trivial">Trivial</Option>
         </Select>
       </Form.Item>
       <Form.Item name="status" label="Issue Status" rules={[{ required: true }]}>
         <Select>
-          <Option value="To-Do">To-Do</Option>
-          <Option value="In Progress">In Progress</Option>
-          <Option value="Done">Done</Option>
+          <Option value="New">New</Option>
+          <Option value="Assigned">Assigned</Option>
+          <Option value="Resolved">Resolved</Option>
+          <Option value="Closed">Closed</Option>
+          <Option value="Reopened">Reopened</Option>
         </Select>
       </Form.Item>
       <Form.Item name="comment" label="Comment">
@@ -74,3 +83,4 @@ const CreateIssue: React.FC<{ onIssueCreate?: (issue: Issue) => void }> = ({ onI
 };
 
 export default CreateIssue;
+
