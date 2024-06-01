@@ -16,7 +16,7 @@ const CreateIssue: React.FC<{ onIssueCreate?: (issue: Issue) => void }> = ({ onI
       title: values.title,
       description: values.description,
       reporter: values.reporter,
-      reportedDate: values.reportedDate.format('YYYY-MM-DD'),
+      reportedDate: dayjs().format('YYYY-MM-DD HH:mm:ss'),
       fixer: values.fixer,
       assignee: values.assignee,
       priority: values.priority || 'Major',
