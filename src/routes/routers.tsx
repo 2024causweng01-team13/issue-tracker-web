@@ -1,11 +1,11 @@
 import { Home } from "@/pages";
-import  {Login}  from "@/pages/login";
+import { Login } from "@/pages/login";
 import ProjectMainBoard from "@/pages/projects";
-import  ProjectDetail  from "@/pages/projects/projectId";
-import { ProjectAnalytics } from "@/pages/projects/projectId/analytics";
+import ProjectDetail from "@/pages/projects/projectId";
+import ProjectAnalytics from "@/pages/projects/projectId/analytics";
 import IssueDetail from "@/pages/projects/projectId/issues/issueId";
-import  CreateIssue  from "@/pages/projects/projectId/new";
-import  {SignUp}  from "@/pages/sign-up";
+import CreateIssue from "@/pages/projects/projectId/new";
+import { SignUp } from "@/pages/sign-up";
 import { Route, Routes } from "react-router-dom";
 
 export const PATHS = {

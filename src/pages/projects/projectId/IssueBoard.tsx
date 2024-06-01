@@ -1,9 +1,11 @@
+import { PATHS } from '@/routes/routers';
+import { Button, Flex, Modal } from 'antd';
 import React, { useState } from 'react';
-import { Button, Modal } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
+import '../../../styles/IssueBoard.css';
 import IssueCard from './IssueCard';
 import { Issue } from './IssueInterface';
 import CreateIssue from './new';
-import '../../../styles/IssueBoard.css';
 
 export const initialIssues: Issue[] = [
   { id: 1, 
@@ -33,6 +35,8 @@ export const initialIssues: Issue[] = [
 const IssueBoard: React.FC = () => {
   const [issues, setIssues] = useState(initialIssues);
   const [ModalVisible, setModalVisible] = useState(false);
+  const { projectId } = useParams();
+  const navigate = useNavigate();
 
   const showModal = () => {
     setModalVisible(true);
@@ -47,12 +51,23 @@ const IssueBoard: React.FC = () => {
     setModalVisible(false);                                                                                                                                                                                          
   };
 
+  const navigateToAnalytics = () => {
+    if (projectId) {
+      navigate(PATHS.PROJECT_ANALYTICS.replace(':projectId', projectId));
+    }
+  }
+
   return (
     <div className="issue-board">
       <div className="button-container">
-        <Button className="create-issue-btn" onClick={showModal}>
-          Create Issue
-        </Button>
+        <Flex gap="small">
+          <Button onClick={navigateToAnalytics}>
+            Analytics
+          </Button>
+          <Button className="create-issue-btn" onClick={showModal}>
+            Create Issue
+          </Button>
+        </Flex>
       </div>
 
       <Modal
