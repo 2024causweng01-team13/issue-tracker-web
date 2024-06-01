@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Button, Form, Input, Modal } from 'antd';
+import { Button, Form, Input, Modal, message } from 'antd';
+import axios from 'axios';
 
 interface CreateProjectProps {
   onCreate: (values: { title: string; description: string }) => void;
@@ -20,9 +21,22 @@ const CreateProject: React.FC<CreateProjectProps> = ({ onCreate }) => {
     setIsModalVisible(false);
   };
 
-  const onFinish = (values: { title: string; description: string }) => {
-    onCreate(values);
-    handleOk(); 
+  const onFinish = async (values: { title: string; description: string }) => {
+    try {
+      const response = await axios.post('http://15.165.202.64/api/v1/projects', {
+        title: values.title,
+        description: values.description,
+        managerId: 0 // Set the appropriate managerId if needed
+      });
+      if (response.status === 200) {
+        message.success('Project created successfully');
+        onCreate(values); // Update the project list
+        handleOk();
+      }
+    } catch (error) {
+      message.error('Failed to create project');
+      console.error(error);
+    }
   };
 
   return (
@@ -35,7 +49,7 @@ const CreateProject: React.FC<CreateProjectProps> = ({ onCreate }) => {
         새 프로젝트 생성
       </Button>
 
-      <Modal title="새 프로젝트 생성" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
+      <Modal title="새 프로젝트 생성" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
         <Form
           name="create_project"
           onFinish={onFinish}
