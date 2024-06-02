@@ -1,10 +1,11 @@
 import { LaptopOutlined, UserOutlined } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, MenuProps, theme } from 'antd';
+import { Breadcrumb, Layout, Menu, MenuProps, message, theme } from 'antd';
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './App.css';
-import { PATHS, Router } from './routes/routers';
 import { createGlobalStyle } from 'styled-components';
+import './App.css';
+import { useUser } from './pages/UserContext';
+import { PATHS, Router } from './routes/routers';
 
 const GlobalSyles = createGlobalStyle
   `
@@ -22,21 +23,40 @@ const { Header, Content, Sider } = Layout;
 export const App = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { isLoggedIn, logout } = useUser();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const Menus: MenuProps['items'] = [{
-    key: 'Login',
-    label: '로그인',
-    onClick: () => navigate(PATHS.LOGIN),
-    icon: React.createElement(UserOutlined),
-  }, {
-    key: 'Projects',
-    label: '프로젝트',
-    onClick: () => navigate(PATHS.PROJECTS_BOARD),
-    icon: React.createElement(LaptopOutlined)
-  }]
+  const Menus: MenuProps['items'] = useMemo(() => [
+    ...(isLoggedIn ? [{
+        key: 'Logout',
+        label: '로그아웃',
+        onClick: () => {
+          logout();
+          navigate(PATHS.LOGIN);
+        },
+        icon: React.createElement(UserOutlined),
+      }] : [{
+        key: 'Login',
+        label: '로그인',
+        onClick: () => navigate(PATHS.LOGIN),
+        icon: React.createElement(UserOutlined),
+      }]), {
+        key: 'Projects',
+        label: '프로젝트',
+        onClick: () => {
+          if (!isLoggedIn) {
+            message.info('로그인이 필요합니다.');
+
+            return navigate(PATHS.LOGIN);
+          }
+
+          navigate(PATHS.PROJECTS_BOARD)
+        },
+        icon: React.createElement(LaptopOutlined)
+      }]
+    ,[isLoggedIn, navigate, logout]);
 
   const breadCrumbContent = useMemo(() => {
     return pathname.split('/').slice(1).map(path => ({ title: path }))

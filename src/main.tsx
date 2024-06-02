@@ -6,13 +6,16 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import './index.css'
+import { UserProvider } from './pages/UserContext.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ConfigProvider theme={{ hashed: false }}>
         <BrowserRouter>
-          <App />
+          <UserProvider>
+            <App />
+          </UserProvider>
         </BrowserRouter>
       </ConfigProvider>
     </QueryClientProvider>
