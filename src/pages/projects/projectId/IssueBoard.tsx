@@ -2,10 +2,12 @@ import { CommonResponse, fetcher } from '@/apis';
 import { IssueStatus, ProjectStatus } from '@/apis/enums';
 import { PATHS } from '@/routes/routers';
 import { useQuery } from '@tanstack/react-query';
-import { Button, Descriptions, Flex, Modal, Spin } from 'antd';
+import { Button, Descriptions, Divider, Flex, List, Modal, Spin } from 'antd';
+import Title from 'antd/es/typography/Title';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../../../styles/IssueBoard.css';
+import { AddMemberModal } from '../AddMemberModal';
 import IssueCard from './IssueCard';
 import { Issue } from './IssueInterface';
 import CreateIssue from './new';
@@ -22,12 +24,17 @@ type FindProjectResponse = CommonResponse<{
   status: ProjectStatus;
   createdAt: Date;
   updatedAt: Date;
+  members: {
+    id: number;
+    name: string;
+  }[];
 }>
 
 const IssueBoard: React.FC = () => {
   const [ModalVisible, setModalVisible] = useState(false);
   const { projectId } = useParams();
   const navigate = useNavigate();
+  const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['issues', 'ofProject', projectId],
@@ -35,7 +42,7 @@ const IssueBoard: React.FC = () => {
       fetcher.post<FindIssuesResponse>('/api/v1/issues/find', { projectId, searchAs: "PROJECT_ID" }),
   });
 
-  const { data: projectData, isLoading: isProjectLoading } = useQuery({
+  const { data: projectData, isLoading: isProjectLoading, refetch: refetchProject } = useQuery({
     queryKey: ['project', projectId],
     queryFn: async () => fetcher.get<FindProjectResponse>(`/api/v1/projects/${projectId}`),
   });
@@ -130,6 +137,25 @@ const IssueBoard: React.FC = () => {
               </div>
             ))}
           </div>
+          <Divider />
+          <Flex justify='space-between'>
+            <Title level={2} className="mb-1">멤버 목록</Title>
+            <Button onClick={() => setIsAddMemberModalOpen(true)}>멤버 추가하기</Button>
+          </Flex>
+          <AddMemberModal 
+            isVisible={isAddMemberModalOpen}
+            setIsVisible={setIsAddMemberModalOpen}
+            onAddMemberSuccess={refetchProject}
+          />
+          <List
+            bordered
+            dataSource={project?.members ?? []}
+            renderItem={(item) => (
+              <List.Item id={item.id.toString()} className="hover:bg-slate-200">
+                {item.name}
+              </List.Item>
+            )}
+          />
         </>
       )}
     </div>
