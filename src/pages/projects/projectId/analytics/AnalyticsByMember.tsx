@@ -35,13 +35,13 @@ export const AnalyticsByMember = () => {
       stacked: true,
     },
     xaxis: {
-      categories: ["a", "b", "c", "d", "e"] ?? data?.data.data?.memberStatistics.map((member) => member.name),
+      categories: data?.data.data?.memberStatistics.map((member) => member.name),
     }
   };
 
   const series = Object.values(IssueStatus).map((status) => ({
     name: status,
-    data: [1, 5, 3, 7, 9] ?? data?.data.data?.memberStatistics.map((member) => member.issueStatistics.find((issue) => issue.status === status)?.count ?? 0)
+    data: data?.data.data ? data?.data.data?.memberStatistics.map((member) => member.issueStatistics.find((issue) => issue.status === status)?.count ?? 0) : [],
   }));
 
   return (

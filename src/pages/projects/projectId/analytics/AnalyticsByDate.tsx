@@ -1,6 +1,7 @@
-import { CommonResponse, fetcher } from "@/apis";
+import { CommonResponse } from "@/apis";
 import { useQuery } from "@tanstack/react-query";
 import { DatePicker, Flex, Radio, Spin } from "antd";
+import axios from "axios";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
 import Chart from "react-apexcharts";
@@ -24,7 +25,7 @@ export const AnalyticsByDate = () => {
   const [endDate, setEndDate] = useState<Dayjs>(dayjs(new Date()));
   const { data, isLoading } = useQuery({ 
     queryKey: ["projects/analytics/date", projectId, unit, startDate, endDate], 
-    queryFn: () => fetcher.post<AnalyticsByDateResponse>("/api/v1/projects/analytics/member", { 
+    queryFn: () => axios.post<AnalyticsByDateResponse>("/api/v1/projects/analytics/date", { 
       projectId: Number(projectId ?? 0),
       unit,
       startDate,
@@ -37,13 +38,13 @@ export const AnalyticsByDate = () => {
       id: "basic-bar",
     },
     xaxis: {
-      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"] ?? data?.data.data?.dateStatistics.map((date) => date.date),
+      categories: data?.data.data ? data?.data.data.dateStatistics.map((date) => date.date) : [],
     },
   };
 
   const series = [{
     name: "series-1",
-    data: [30, 40, 45, 50, 49, 60, 70, 91, 125] ?? data?.data.data?.dateStatistics.map((date) => date.count),
+    data: data?.data.data ? data?.data.data.dateStatistics.map((date) => date.count) : [],
   }];
 
   const onDateChange = (dates: (Dayjs | null)[] | null) => {

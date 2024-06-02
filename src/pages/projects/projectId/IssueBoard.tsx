@@ -98,7 +98,7 @@ const IssueBoard: React.FC = () => {
         </Flex>
       ) : (
         <>
-          <Descriptions title={project?.title} items={projectItems} layout="vertical" bordered={true} />
+          <Descriptions title={`프로젝트 ${projectId} 정보`} items={projectItems} layout="vertical" bordered={true} size="small" />
           <div className="button-container">
             <Flex gap="small">
               <Button onClick={navigateToAnalytics}>
