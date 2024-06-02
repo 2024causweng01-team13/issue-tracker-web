@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { Col, Row } from 'antd';
+import { useState } from 'react';
+import '../../styles/MainBoard.css';
 import ProjectCard from './ProjectCard';
 import CreateProject from './new';
-import '../../styles/MainBoard.css';
 
 interface Project {
   id: number;

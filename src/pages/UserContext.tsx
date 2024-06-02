@@ -15,6 +15,7 @@ const UserContext = createContext<{
 
 interface User {
   id: number;
+  name: string;
   token: string;
 }
 
@@ -25,13 +26,13 @@ export const UserProvider = ({ children }) => {
   const login = (token: string) => {
     if (!token) return;
     
-    const id = jwtDecode(token).sub;
-    if (!id) return;
+    const { id, name, expiresAt } = jwtDecode<{ id: string; name: string; expiresAt: number }>(token);
+    if (!id || !name || !expiresAt || expiresAt < Date.now() / 1000) {
+      console.log('Invalid token');
+      return
+    }
 
-    const exp = jwtDecode(token).exp;
-    if (!exp || exp < Date.now() / 1000) return;
-
-    setUser({ id: Number(id), token });
+    setUser({ id: Number(id), name, token });
   }
 
   const logout = () => {
