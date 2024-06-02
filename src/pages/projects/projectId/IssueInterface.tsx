@@ -1,22 +1,24 @@
+import { IssuePriority, IssueStatus } from "@/apis/enums";
+
 export interface Issue {
   id: number;
   title: string;
-  description: string;
-  reporter: string;
-  reportedDate?: string;
-  fixer: string;
-  assignee: string;
-  priority: 'Blocker' | 'Critical' | 'Major' | 'Minor' | 'Trivial';
-  status: 'New' | 'Assigned' | 'Resolved' | 'Closed' | 'Reopened';
+  description?: string;
+  reporterName: string;
+  assigneeName?: string;
+  fixerName?: string;
+  priority: IssuePriority;
+  status: IssueStatus;
   comments: Comment[];
-  keyword:string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 
 export interface Comment {
   id: number;
   content: string;
-  commentedDate: Date;
-  commentedBy: string;
+  authorName: string;
+  createdAt: Date;
 }
 

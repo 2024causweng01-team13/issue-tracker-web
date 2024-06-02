@@ -1,33 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import { CommonResponse, fetcher } from '@/apis';
+import { useQuery } from '@tanstack/react-query';
+import { Button, Flex, Spin } from 'antd';
+import dayjs from 'dayjs';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Issue, Comment } from '../IssueInterface';
-import { initialIssues } from '../IssueBoard';
-import CommentList from './CommentBy';
 import '../../../../styles/IssueDetail.css';
+import { Issue } from '../IssueInterface';
+import CommentList from './CommentList';
 import EditIssue from './EditIssue';
-import { Button } from 'antd';
-
 
 const IssueDetail: React.FC = () => {
-  let { id } = useParams<{ id: string }>();
-  const [issue, setIssue] = useState<Issue | null>(null);
+  const { id } = useParams<{ id: string }>();
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      const foundIssue = initialIssues.find(issue => issue.id === parseInt(id as string));
-      setIssue(foundIssue || null);
-    }
-  }, [id]);
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['issues', id],
+    queryFn: async () => fetcher.get<CommonResponse<Issue>>(`/api/v1/issues/${id}`),
+  });
 
-  const handleAddComment = (comment: Comment) => {
-    if (issue) {
-      const updatedIssue = {
-        ...issue,
-        comments: issue.comments ? [...issue.comments, comment] : [comment],
-      };
-      setIssue(updatedIssue);
-    }
+  const issue = data?.data?.data;
+
+  const handleAddComment = () => {
+    refetch();
   };
 
   const handleEditClick = () => {
@@ -39,12 +33,17 @@ const IssueDetail: React.FC = () => {
   };
 
   const handleSaveClick = (updatedIssue: Issue) => {
-    setIssue(updatedIssue);
     setIsEditing(false);
   };
 
-  if (!issue) {
-    return <div>Loading...</div>;
+  if (isLoading || !issue) {
+    return (
+      <Flex justify="center" align="center" style={{ height: "100%" }}>
+        <div className="m-20">
+          <Spin tip="로딩 중입니다" size="large" />
+        </div>
+      </Flex>
+    )
   }
 
   return (
@@ -60,13 +59,12 @@ const IssueDetail: React.FC = () => {
           <p><strong>Issue ID:</strong> {issue.id}</p>
           <p><strong>Title:</strong> {issue.title}</p>
           <p><strong>Description:</strong> {issue.description}</p>
-          <p><strong>Reporter:</strong> {issue.reporter}</p>
-          <p><strong>ReportedDate:</strong> {issue.reportedDate}</p>
-          <p><strong>Fixer:</strong> {issue.fixer}</p>
-          <p><strong>Assignee:</strong> {issue.assignee}</p>
+          <p><strong>Reporter:</strong> {issue.reporterName}</p>
+          <p><strong>ReportedDate:</strong> {dayjs(issue.createdAt).format("YYYY-MM-DD")}</p>
+          <p><strong>Fixer:</strong> {issue.fixerName}</p>
+          <p><strong>Assignee:</strong> {issue.assigneeName}</p>
           <p><strong>Priority:</strong> {issue.priority}</p>
           <p><strong>Status:</strong> {issue.status}</p>
-          <p><strong>Keyword:</strong> {issue.keyword}</p>
           <div className='comments-section'>
             <CommentList comments={issue.comments || []} onAddComment={handleAddComment} />
           </div>

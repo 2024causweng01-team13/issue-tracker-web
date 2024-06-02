@@ -1,7 +1,7 @@
+import { Button, Form, Input } from 'antd';
 import React, { useState } from 'react';
-import { Issue } from '../IssueInterface';
-import { Button, Input, Form } from 'antd';
 import '../../../../styles/EditIssue.css';
+import { Issue } from '../IssueInterface';
 
 interface EditIssueProps {
   issue: Issue;
@@ -41,38 +41,6 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onSave, onCancel }) => {
             onChange={handleChange}
           />
         </Form.Item>
-        <Form.Item label="Reporter">
-          <Input
-            type="text"
-            name="reporter"
-            value={editedIssue.reporter}
-            onChange={handleChange}
-          />
-        </Form.Item>
-        <Form.Item label="Reported Date">
-          <Input
-            type="text"
-            name="reportedDate"
-            value={editedIssue.reportedDate}
-            onChange={handleChange}
-          />
-        </Form.Item>
-        <Form.Item label="Fixer">
-          <Input
-            type="text"
-            name="fixer"
-            value={editedIssue.fixer}
-            onChange={handleChange}
-          />
-        </Form.Item>
-        <Form.Item label="Assignee">
-          <Input
-            type="text"
-            name="assignee"
-            value={editedIssue.assignee}
-            onChange={handleChange}
-          />
-        </Form.Item>
         <Form.Item label="Priority">
           <Input
             type="text"
@@ -86,14 +54,6 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onSave, onCancel }) => {
             type="text"
             name="status"
             value={editedIssue.status}
-            onChange={handleChange}
-          />
-        </Form.Item>
-        <Form.Item label="Keyword">
-          <Input
-            type="text"
-            name="keyword"
-            value={editedIssue.keyword}
             onChange={handleChange}
           />
         </Form.Item>
