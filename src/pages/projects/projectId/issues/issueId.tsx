@@ -11,6 +11,7 @@ import { Issue } from '../IssueInterface';
 import { AssignIssueModal } from './AssignIssueModal';
 import CommentList from './CommentList';
 import EditIssue from './EditIssue';
+import { FixIssueModal } from './FixIssueModal';
 
 const IssueDetail: React.FC = () => {
   const { id: issueId } = useParams<{ id: string }>();
@@ -70,12 +71,14 @@ const IssueDetail: React.FC = () => {
   return (
     <div className="issue-detail">
       <h2>{issue.title}</h2>
-      <Flex gap="small" justify="end" align="center">
+      <Flex vertical gap="small" justify="end" align="end">
         {!isEditing && (
           <>
-            <Button onClick={assignIssue}>이슈 할당하기</Button>
-            <Button onClick={handleEditClick}>이슈 수정하기</Button>
-            <Button onClick={fixIssue}>이슈 수정하기</Button>
+            <Button type="primary" onClick={handleEditClick}>이슈 수정하기</Button>
+            <Flex gap="small">
+              <Button onClick={assignIssue}>이슈 할당하기</Button>
+              <Button onClick={fixIssue}>이슈 해결하기</Button>
+            </Flex>
           </>
         )}
       </Flex>
@@ -84,7 +87,11 @@ const IssueDetail: React.FC = () => {
         setIsVisible={setIsAssignIssueModalOpen} 
         onAssignSuccess={() => refetch()}
       />
-      <
+      <FixIssueModal
+        isVisible={isFixIssueModalOpen}
+        setIsVisible={setIsFixIssueModalOpen}
+        onFixSuccess={() => refetch()}
+      />
       {isEditing ? (
         <EditIssue issue={issue} onEditSuccess={handleEditSuccess} onCancel={handleCancelClick} />
       ) : (
@@ -102,7 +109,6 @@ const IssueDetail: React.FC = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

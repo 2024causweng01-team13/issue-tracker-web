@@ -24,7 +24,7 @@ export const ProjectMainBoard: React.FC = () => {
     queryFn: async () => fetcher.post<FindProjectsResponse>('/api/v1/projects/find', {}),
   });
 
-  const handleCreateProject = (newProject: { title: string; description: string }) => {
+  const handleCreateProject = () => {
     refetch();
   };
 
