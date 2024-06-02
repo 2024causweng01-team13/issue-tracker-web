@@ -1,5 +1,6 @@
-import { Col, Row } from 'antd';
-import { useState } from 'react';
+import { CommonResponse, fetcher } from '@/apis';
+import { useQuery } from '@tanstack/react-query';
+import { Col, Flex, Row, Spin } from 'antd';
 import '../../styles/MainBoard.css';
 import ProjectCard from './ProjectCard';
 import CreateProject from './new';
@@ -8,25 +9,26 @@ interface Project {
   id: number;
   title: string;
   description: string;
-  user: string;
-  priority: string;
-  type: string;
+  managerName: string;
+  status: string;
+  createdAt: Date;
 }
 
-// 초기 기본 세팅
-const initialProjects: Project[] = [
-  { id: 1, title: '프로젝트 1', description: '프로젝트 1 설명', user: '사용자 A', priority: '높음', type: '개발' },
-  { id: 2, title: '프로젝트 2', description: '프로젝트 2 설명', user: '사용자 B', priority: '중간', type: '디자인' },
-];
+type FindProjectsResponse = CommonResponse<{
+  projects: Project[];
+}>;
 
 export const ProjectMainBoard: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
+  const { data, isLoading, refetch } = useQuery({ 
+    queryKey: ['projects'], 
+    queryFn: async () => fetcher.post<FindProjectsResponse>('/api/v1/projects/find', {}),
+  });
 
   const handleCreateProject = (newProject: { title: string; description: string }) => {
-    const newId = projects.length ? projects[projects.length - 1].id + 1 : 1;
-    const projectWithId: Project = { id: newId, ...newProject, user: '사용자 C', priority: '낮음', type: '기타' }; // 기본값 설정
-    setProjects([...projects, projectWithId]);
+    refetch();
   };
+
+  const projects = data?.data?.data?.projects ?? [];
 
   return (
     <div className="projectBoardContainer">
@@ -34,13 +36,21 @@ export const ProjectMainBoard: React.FC = () => {
       <div className="createProjectBox">
         <CreateProject onCreate={handleCreateProject} />
       </div>
-      <Row gutter={16}>
-        {projects.map((project) => (
-          <Col key={project.id} span={24}>
-            <ProjectCard project={project} />
-          </Col>
-        ))}
-      </Row>
+      {isLoading ? (
+        <Flex justify="center" align="center" style={{ height: "100%" }}>
+          <div className="m-20">
+            <Spin tip="로딩 중입니다" size="large" />
+          </div>
+        </Flex>
+      ) : (
+        <Row gutter={16}>
+          {projects.map((project) => (
+            <Col key={project.id} span={24}>
+              <ProjectCard project={project} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 };

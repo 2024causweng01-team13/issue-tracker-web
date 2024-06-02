@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { fetcher } from '@/apis';
+import { PATHS } from '@/routes/routers';
 import { Button, Form, Input, Modal, message } from 'antd';
-import axios from 'axios';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../UserContext';
 
 interface CreateProjectProps {
   onCreate: (values: { title: string; description: string }) => void;
@@ -8,6 +11,8 @@ interface CreateProjectProps {
 
 const CreateProject: React.FC<CreateProjectProps> = ({ onCreate }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { user } = useUser();
+  const navigate = useNavigate();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -22,12 +27,19 @@ const CreateProject: React.FC<CreateProjectProps> = ({ onCreate }) => {
   };
 
   const onFinish = async (values: { title: string; description: string }) => {
+    if (!user) {
+      message.error('로그인이 필요합니다.');
+      navigate(PATHS.LOGIN);
+      return;
+    }
+
     try {
-      const response = await axios.post('http://15.165.202.64/api/v1/projects', {
+      const response = await fetcher.post('/api/v1/projects', {
         title: values.title,
         description: values.description,
-        managerId: 0 // Set the appropriate managerId if needed
+        managerId: user.id,
       });
+      
       if (response.status === 200) {
         message.success('Project created successfully');
         onCreate(values); // Update the project list
