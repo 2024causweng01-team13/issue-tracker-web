@@ -1,16 +1,43 @@
-import { Button, Form, Input } from 'antd';
+import { fetcher } from '@/apis';
+import { IssuePriority, IssueStatus } from '@/apis/enums';
+import { useUser } from '@/pages/UserContext';
+import { PATHS } from '@/routes/routers';
+import { useMutation } from '@tanstack/react-query';
+import { Button, Form, Input, Select, message } from 'antd';
 import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../../../../styles/EditIssue.css';
 import { Issue } from '../IssueInterface';
 
 interface EditIssueProps {
   issue: Issue;
-  onSave: (updatedIssue: Issue) => void;
+  onEditSuccess: () => void;
   onCancel: () => void;
 }
 
-const EditIssue: React.FC<EditIssueProps> = ({ issue, onSave, onCancel }) => {
+const EditIssue: React.FC<EditIssueProps> = ({ issue, onEditSuccess, onCancel }) => {
   const [editedIssue, setEditedIssue] = useState<Issue>(issue);
+  const { id: issueId } = useParams<{ id: string }>();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+  const { mutate } = useMutation({
+    mutationFn: () => {
+      if (!user) {
+        message.error('로그인이 필요합니다.');
+        navigate(PATHS.LOGIN);
+        return Promise.reject();
+      }
+
+      return fetcher.post(`/api/v1/issues/${issueId}`, {
+        editorId: user.id,
+        ...editedIssue,
+      });
+    },
+    onSuccess: () => {
+      message.success('성공적으로 수정되었습니다!');
+    }
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setEditedIssue({
@@ -19,13 +46,9 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onSave, onCancel }) => {
     });
   };
 
-  const handleSaveClick = () => {
-    onSave(editedIssue);
-  };
-
   return (
     <div className="edit-issue">
-      <Form layout="vertical">
+      <Form layout="vertical" onFinish={mutate}>
         <Form.Item label="Title">
           <Input
             type="text"
@@ -41,24 +64,26 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onSave, onCancel }) => {
             onChange={handleChange}
           />
         </Form.Item>
-        <Form.Item label="Priority">
-          <Input
-            type="text"
-            name="priority"
-            value={editedIssue.priority}
-            onChange={handleChange}
-          />
+        <Form.Item name="priority" label="Priority" rules={[{ required: true }]} initialValue={IssuePriority.Major}>
+          <Select>
+            {Object.values(IssuePriority).map((priority) => (
+              <Select.Option key={priority} value={priority}>
+                {priority}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
-        <Form.Item label="Status">
-          <Input
-            type="text"
-            name="status"
-            value={editedIssue.status}
-            onChange={handleChange}
-          />
+        <Form.Item name="status" label="Issue Status" rules={[{ required: true }]}>
+          <Select>
+            {Object.values(IssueStatus).map((status) => (
+              <Select.Option key={status} value={status}>
+                {status}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
         <div className="button-group">
-          <Button type="primary" onClick={handleSaveClick}>Save</Button>
+          <Button type="primary" onClick={() => onEditSuccess()}>Save</Button>
           <Button onClick={onCancel}>Cancel</Button>
         </div>
       </Form>
