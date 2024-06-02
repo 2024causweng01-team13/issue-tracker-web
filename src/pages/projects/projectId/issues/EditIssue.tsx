@@ -4,6 +4,7 @@ import { useUser } from '@/pages/UserContext';
 import { PATHS } from '@/routes/routers';
 import { useMutation } from '@tanstack/react-query';
 import { Button, Form, Input, Select, message } from 'antd';
+import { useForm } from 'antd/es/form/Form';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../../../../styles/EditIssue.css';
@@ -17,6 +18,7 @@ interface EditIssueProps {
 
 const EditIssue: React.FC<EditIssueProps> = ({ issue, onEditSuccess, onCancel }) => {
   const [editedIssue, setEditedIssue] = useState<Issue>(issue);
+  const [form] = useForm();
   const { id: issueId } = useParams<{ id: string }>();
   const { user } = useUser();
   const navigate = useNavigate();
@@ -29,13 +31,16 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onEditSuccess, onCancel })
         return Promise.reject();
       }
 
+      console.log(form.getFieldsValue());
+
       return fetcher.post(`/api/v1/issues/${issueId}`, {
         editorId: user.id,
-        ...editedIssue,
+        ...form.getFieldsValue(),
       });
     },
     onSuccess: () => {
       message.success('성공적으로 수정되었습니다!');
+      onEditSuccess();
     }
   });
 
@@ -46,9 +51,13 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onEditSuccess, onCancel })
     });
   };
 
+  const handleSave = () => {
+    mutate();
+  }
+
   return (
     <div className="edit-issue">
-      <Form layout="vertical" onFinish={mutate}>
+      <Form form={form} layout="vertical" onFinish={mutate}>
         <Form.Item label="Title">
           <Input
             type="text"
@@ -64,7 +73,7 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onEditSuccess, onCancel })
             onChange={handleChange}
           />
         </Form.Item>
-        <Form.Item name="priority" label="Priority" rules={[{ required: true }]} initialValue={IssuePriority.Major}>
+        <Form.Item name="priority" label="Priority" rules={[{ required: true }]} initialValue={editedIssue.priority}>
           <Select>
             {Object.values(IssuePriority).map((priority) => (
               <Select.Option key={priority} value={priority}>
@@ -73,7 +82,7 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onEditSuccess, onCancel })
             ))}
           </Select>
         </Form.Item>
-        <Form.Item name="status" label="Issue Status" rules={[{ required: true }]}>
+        <Form.Item name="status" label="Issue Status" rules={[{ required: true }]} initialValue={editedIssue.status}>
           <Select>
             {Object.values(IssueStatus).map((status) => (
               <Select.Option key={status} value={status}>
@@ -83,7 +92,7 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onEditSuccess, onCancel })
           </Select>
         </Form.Item>
         <div className="button-group">
-          <Button type="primary" onClick={() => onEditSuccess()}>Save</Button>
+          <Button type="primary" onClick={handleSave}>Save</Button>
           <Button onClick={onCancel}>Cancel</Button>
         </div>
       </Form>

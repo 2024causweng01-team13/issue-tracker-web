@@ -13,3 +13,10 @@ export enum IssueStatus {
   Closed = 'CLOSED',
   Reopened = 'REOPENED',
 }
+
+export enum ProjectStatus {
+  Open = "OPEN",
+	InProgress = "IN_PROGRESS",
+	Done = "DONE",
+	Closed = "CLOSED"
+}
