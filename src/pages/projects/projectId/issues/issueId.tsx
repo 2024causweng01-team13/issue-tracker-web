@@ -1,24 +1,44 @@
 import { CommonResponse, fetcher } from '@/apis';
+import { PATHS } from '@/routes/routers';
 import { useQuery } from '@tanstack/react-query';
-import { Button, Flex, Spin } from 'antd';
+import { Button, Flex, Spin, message } from 'antd';
+import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../../../../styles/IssueDetail.css';
 import { Issue } from '../IssueInterface';
+import { AssignIssueModal } from './AssignIssueModal';
 import CommentList from './CommentList';
 import EditIssue from './EditIssue';
 
 const IssueDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id: issueId } = useParams<{ id: string }>();
   const [isEditing, setIsEditing] = useState(false);
 
+  const navigate = useNavigate();
+
+  const [isAssignIssueModalOpen, setIsAssignIssueModalOpen] = useState(false);
+  const [isFixIssueModalOpen, setIsFixIssueModalOpen] = useState(false);
+
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['issues', id],
-    queryFn: async () => fetcher.get<CommonResponse<Issue>>(`/api/v1/issues/${id}`),
+    queryKey: ['issues', issueId],
+    queryFn: async () => fetcher.get<CommonResponse<Issue>>(`/api/v1/issues/${issueId}`)
+      .catch((error) => {
+        message.error((error as AxiosError).response?.data?.message ?? error.message);
+        navigate(PATHS.PROJECTS_BOARD);
+      }),
   });
 
   const issue = data?.data?.data;
+
+  const assignIssue = () => {
+    setIsAssignIssueModalOpen(true);
+  }
+  
+  const fixIssue = () => {
+    setIsFixIssueModalOpen(true);
+  }
 
   const handleAddComment = () => {
     refetch();
@@ -32,8 +52,9 @@ const IssueDetail: React.FC = () => {
     setIsEditing(false);
   };
 
-  const handleSaveClick = (updatedIssue: Issue) => {
+  const handleEditSuccess = () => {
     setIsEditing(false);
+    refetch();
   };
 
   if (isLoading || !issue) {
@@ -48,16 +69,27 @@ const IssueDetail: React.FC = () => {
 
   return (
     <div className="issue-detail">
-      <h2>Issue Detail</h2>
-      <div className="editIssue" style={{ margin: '10px' }}>
-        <Button onClick={handleEditClick}>Edit Issue</Button>
-      </div>
+      <h2>{issue.title}</h2>
+      <Flex gap="small" justify="end" align="center">
+        {!isEditing && (
+          <>
+            <Button onClick={assignIssue}>이슈 할당하기</Button>
+            <Button onClick={handleEditClick}>이슈 수정하기</Button>
+            <Button onClick={fixIssue}>이슈 수정하기</Button>
+          </>
+        )}
+      </Flex>
+      <AssignIssueModal 
+        isVisible={isAssignIssueModalOpen} 
+        setIsVisible={setIsAssignIssueModalOpen} 
+        onAssignSuccess={() => refetch()}
+      />
+      <
       {isEditing ? (
-        <EditIssue issue={issue} onSave={handleSaveClick} onCancel={handleCancelClick} />
+        <EditIssue issue={issue} onEditSuccess={handleEditSuccess} onCancel={handleCancelClick} />
       ) : (
         <div>
           <p><strong>Issue ID:</strong> {issue.id}</p>
-          <p><strong>Title:</strong> {issue.title}</p>
           <p><strong>Description:</strong> {issue.description}</p>
           <p><strong>Reporter:</strong> {issue.reporterName}</p>
           <p><strong>ReportedDate:</strong> {dayjs(issue.createdAt).format("YYYY-MM-DD")}</p>
