@@ -1,16 +1,9 @@
 import { CommonResponse, fetcher } from "@/apis";
+import { IssueStatus } from "@/apis/enums";
 import { useQuery } from "@tanstack/react-query";
 import { Flex, Spin } from "antd";
 import Chart from "react-apexcharts";
 import { useParams } from "react-router-dom";
-
-enum IssueStatus {
-  NEW = "NEW",
-	ASSIGNED = "ASSIGNED",
-	RESOLVED = "RESOLVED",
-	CLOSED = "CLOSED",
-	REOPENED = "REOPENED",
-}
 
 type AnalyticsByMemberResponse = CommonResponse<{
   memberStatistics: {
