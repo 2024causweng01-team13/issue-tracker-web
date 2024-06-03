@@ -31,7 +31,7 @@ export const AddMemberModal = ({ isVisible, setIsVisible, onAddMemberSuccess }: 
   const debouncedUsername = useDebounce({ value: username, delay: 500 });
 
   const { data, isLoading } = useQuery({
-    queryKey: ['users', debouncedUsername],
+    queryKey: ['users', projectId, 'AddMemberModal'],
     queryFn: async () => {
       if (!debouncedUsername) {
         return;
