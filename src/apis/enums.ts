@@ -9,6 +9,7 @@ export enum IssuePriority {
 export enum IssueStatus {
   New = 'NEW',
   Assigned = 'ASSIGNED',
+  Fixed = 'FIXED',
   Resolved = 'RESOLVED',
   Closed = 'CLOSED',
   Reopened = 'REOPENED',
