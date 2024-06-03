@@ -61,19 +61,19 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onEditSuccess, onCancel })
         <Form.Item label="Title">
           <Input
             type="text"
-            name="title"
+            name="제목"
             value={editedIssue.title}
             onChange={handleChange}
           />
         </Form.Item>
         <Form.Item label="Description">
           <Input.TextArea
-            name="description"
+            name="설명"
             value={editedIssue.description}
             onChange={handleChange}
           />
         </Form.Item>
-        <Form.Item name="priority" label="Priority" rules={[{ required: true }]} initialValue={editedIssue.priority}>
+        <Form.Item name="priority" label="우선순위" rules={[{ required: true }]} initialValue={editedIssue.priority}>
           <Select>
             {Object.values(IssuePriority).map((priority) => (
               <Select.Option key={priority} value={priority}>
@@ -82,7 +82,7 @@ const EditIssue: React.FC<EditIssueProps> = ({ issue, onEditSuccess, onCancel })
             ))}
           </Select>
         </Form.Item>
-        <Form.Item name="status" label="Issue Status" rules={[{ required: true }]} initialValue={editedIssue.status}>
+        <Form.Item name="status" label="상태" rules={[{ required: true }]} initialValue={editedIssue.status}>
           <Select>
             {Object.values(IssueStatus).map((status) => (
               <Select.Option key={status} value={status}>

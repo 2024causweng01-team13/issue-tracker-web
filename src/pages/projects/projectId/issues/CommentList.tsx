@@ -80,7 +80,7 @@ const CommentList: React.FC<CommentProps> = ({ comments, onAddComment }) => {
         </Form.Item>
         <Form.Item>
           <Button type="primary" onClick={handleAddComment}>
-            Add Comment
+            코멘트 추가하기
           </Button>
         </Form.Item>
       </Form>

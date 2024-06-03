@@ -54,15 +54,15 @@ const IssueBoard: React.FC = () => {
     label: '제목',
     children: project.title,
   }, {
-    key: 3,
+    key: 2,
     label: '매니저',
     children: project.managerName,
   }, {
-    key: 4,
+    key: 3,
     label: '상태',
     children: project.status,
   }, {
-    key: 2,
+    key: 4,
     label: '설명',
     children: project.description,
     span: 3,
@@ -117,7 +117,7 @@ const IssueBoard: React.FC = () => {
             </Flex>
           </div>
           <Modal
-            title="Create a New Issue"
+            title="이슈 생성하기"
             open={ModalVisible}
             onCancel={handleCancel}
             footer={null}

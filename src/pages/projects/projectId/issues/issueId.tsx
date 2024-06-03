@@ -1,9 +1,8 @@
 import { CommonResponse, fetcher } from '@/apis';
 import { PATHS } from '@/routes/routers';
 import { useQuery } from '@tanstack/react-query';
-import { Button, Flex, Spin, message } from 'antd';
+import { Button, Descriptions, Flex, Spin, message } from 'antd';
 import { AxiosError } from 'axios';
-import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../../../../styles/IssueDetail.css';
@@ -68,6 +67,41 @@ const IssueDetail: React.FC = () => {
     )
   }
 
+  const issueItems = issue ? [{
+    key: 1,
+    label: '제목',
+    children: issue.title,
+  }, {
+    key: 2,
+    label: '설명',
+    children: issue.description,
+    span: 3,
+  }, {
+    key: 3,
+    label: '제보자',
+    children: issue.reporterName,
+  }, {
+    key: 4,
+    label: '수정자',
+    children: issue.fixerName,
+  }, {
+    key: 5,
+    label: '할당자',
+    children: issue.assigneeName,
+  }, {
+    key: 6,
+    label: '제보일',
+    children: <>{issue.createdAt}</>,
+  }, {
+    key: 7,
+    label: '우선순위',
+    children: issue.priority,
+  }, {
+    key: 8,
+    label: '상태',
+    children: issue.status,
+  }] : [];
+
   return (
     <div className="issue-detail">
       <h2>{issue.title}</h2>
@@ -96,14 +130,7 @@ const IssueDetail: React.FC = () => {
         <EditIssue issue={issue} onEditSuccess={handleEditSuccess} onCancel={handleCancelClick} />
       ) : (
         <div>
-          <p><strong>Issue ID:</strong> {issue.id}</p>
-          <p><strong>Description:</strong> {issue.description}</p>
-          <p><strong>Reporter:</strong> {issue.reporterName}</p>
-          <p><strong>ReportedDate:</strong> {dayjs(issue.createdAt).format("YYYY-MM-DD")}</p>
-          <p><strong>Fixer:</strong> {issue.fixerName}</p>
-          <p><strong>Assignee:</strong> {issue.assigneeName}</p>
-          <p><strong>Priority:</strong> {issue.priority}</p>
-          <p><strong>Status:</strong> {issue.status}</p>
+          <Descriptions title={`이슈 ${issueId} 정보`} items={issueItems} layout="horizontal" bordered={true} size="small" />
           <div className='comments-section'>
             <CommentList comments={issue.comments || []} onAddComment={handleAddComment} />
           </div>

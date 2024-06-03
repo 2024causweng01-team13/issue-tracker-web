@@ -45,10 +45,10 @@ const CreateIssue: React.FC<{ onIssueCreate: () => void }> = ({ onIssueCreate })
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} initialValues={{ reportedDate: dayjs() }}>
-      <Form.Item name="title" label="Issue Title" rules={[{ required: true }]}>
+      <Form.Item name="title" label="이슈 제목" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="description" label="Issue Description" rules={[{ required: true }]}>
+      <Form.Item name="description" label="이슈 설명" rules={[{ required: true }]}>
         <TextArea rows={4} />
       </Form.Item>
       <Form.Item>
