@@ -33,7 +33,7 @@ export const AssignIssueModal = ({ isVisible, setIsVisible, onAssignSuccess }: A
   const debouncedUsername = useDebounce({ value: username, delay: 500 });
 
   const { data, isLoading } = useQuery({
-    queryKey: ['users', issueId, 'AssignIssueModal'],
+    queryKey: ['users', debouncedUsername],
     queryFn: async () => {
       if (!debouncedUsername) {
         return;
